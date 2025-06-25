@@ -3,16 +3,14 @@ public class Main {
 
         System.out.println("================================================");
 
-        MatrixUtils matrixUtils = new MatrixUtils(4 , 5);
-        int[][] randomeMatrix = matrixUtils.rendomMatrix();
+        MatrixUtils matrixUtils1 = new MatrixUtils(4 , 5);
+        int[][] randomeMatrix1 = matrixUtils1.rendomMatrix();
 
-        for (int i = 0; i < matrixUtils.getRows(); i++) {
-            for (int j = 0; j < matrixUtils.getCols(); j++) {
-                System.out.print(randomeMatrix[i][j] + "   ");
-            }
-            System.out.println();
-        }
+        MatrixUtils matrixUtils2 = new MatrixUtils(5 , 5);
+        int[][] randomeMatrix2 = matrixUtils2.rendomMatrix();
 
-
+        matrixUtils1.desplyMatrix(randomeMatrix1);
+        System.out.println("=============================");
+        matrixUtils2.desplyMatrix(randomeMatrix2);
     }
 }
