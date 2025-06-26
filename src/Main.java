@@ -1,16 +1,62 @@
 public class Main {
     public static void main(String[] args) {
 
-        System.out.println("================================================");
+        System.out.println("=== === === === === === === ===");
 
-        MatrixUtils matrixUtils1 = new MatrixUtils(4 , 5);
-        int[][] randomeMatrix1 = matrixUtils1.rendomMatrix();
+//        MatrixUtils matrixUtils1 = new MatrixUtils(7 , 5);
+//        int[][] randomeMatrix1 = matrixUtils1.rendomMatrix();
+//
+//        MatrixUtils matrixUtils2 = new MatrixUtils(5 , 5);
+//        int[][] randomeMatrix2 = matrixUtils2.rendomMatrix();
+//
+//        matrixUtils1.desplyMatrix(randomeMatrix1);
+//        System.out.println("=============================");
+//        matrixUtils2.desplyMatrix(randomeMatrix2);
+//
+//        System.out.println(randomeMatrix1.length);
+//        Matrix matrix = new Matrix(3,3);
+//        matrix.createMatrixFromUserInput();
+//        System.out.println("first matrix is: ");
+//        matrix.displayMatrix();
+//
+//        Matrix matrix1 = new Matrix(3,3);
+//        matrix1.createMatrixFromUserInput();
+//        System.out.println("second matrix is: ");
+//        matrix1.displayMatrix();
+        Matrix matrix1 = new Matrix(2,2);
+        matrix1.rendomMatrix();
+        System.out.println("first matrix is: ");
+        matrix1.displayMatrix();
 
-        MatrixUtils matrixUtils2 = new MatrixUtils(5 , 5);
-        int[][] randomeMatrix2 = matrixUtils2.rendomMatrix();
+        Matrix matrix2 = new Matrix(2,2);
+        matrix2.rendomMatrix();
+        System.out.println("second matrix is: ");
+        matrix2.displayMatrix();
 
-        matrixUtils1.desplyMatrix(randomeMatrix1);
-        System.out.println("=============================");
-        matrixUtils2.desplyMatrix(randomeMatrix2);
+        System.out.println("=== adding 2 matrix ===");
+        Matrix adding = matrix1.add(matrix2);
+        adding.displayMatrix();
+
+        System.out.println("=== sub 2 matrix ===");
+        Matrix sub = matrix1.subtract(matrix2);
+        sub.displayMatrix();
+
+        System.out.println("=== multiplying matrix ===");
+        Matrix multiply = matrix1.multiply(matrix2);
+        multiply.displayMatrix();
+
+
+
+//        Matrix matrix2 = new Matrix(3,3);
+//        int[][] mat2 = matrix2.createMatrix();
+//        System.out.println("===========Matrix Created==========");
+//        matrix2.desplyMatrix(mat2);
+//
+//        System.out.println("========= the sum of 2 matrix");
+//        Matrix sum = matrix.add(matrix2);
+
+
+
+
     }
 }
