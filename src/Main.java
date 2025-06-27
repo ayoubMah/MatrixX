@@ -14,18 +14,24 @@ public class Main {
 //        matrixUtils2.desplyMatrix(randomeMatrix2);
 //
 //        System.out.println(randomeMatrix1.length);
-        Matrix matrix2 = new Matrix(3,3);
+        Matrix matrix2 = new Matrix(2,2);
         matrix2.createMatrixFromUserInput();
         System.out.println("first matrix is: ");
         matrix2.displayMatrix();
+        Matrix col = matrix2.transpose();
+        System.out.println("transpose of your matrix is: ");
+        col.displayMatrix();
 
-        Matrix matrix1 = new Matrix(3,3);
-        matrix1.createMatrixFromUserInput();
-        System.out.println("second matrix is: ");
-        matrix1.displayMatrix();
+        System.out.println("is it a square matrix : ");
+        System.out.println(matrix2.isSquare());;
 
-        System.out.println("is matrix1 equal to matrix2:  ? ");
-        System.out.println(matrix1.isEquals(matrix2));
+//        Matrix matrix1 = new Matrix(3,3);
+//        matrix1.createMatrixFromUserInput();
+//        System.out.println("second matrix is: ");
+//        matrix1.displayMatrix();
+//
+//        System.out.println("is matrix1 equal to matrix2:  ? ");
+//        System.out.println(matrix1.isEquals(matrix2));
 
 //        Matrix matrix = new Matrix(4,4);
 //        matrix.identity();

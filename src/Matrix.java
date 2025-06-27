@@ -161,13 +161,19 @@ public class Matrix {
         return true;
     }
 
+    // tanspose of a matrix
     public Matrix transpose() {
         Matrix result = new Matrix(this.cols, this.rows); // switching numbers of cols and rows
-        for (int i = 0; i < this.rows; i++) {
-            for (int j = 0; j < this.cols; j++) {
-                this.data[j][i] = this.data[i][j];
+        for (int i = 0; i < result.rows; i++) {
+            for (int j = 0; j < result.cols; j++) {
+                result.data[i][j] = this.data[j][i];
             }
         }
+        return result;
+    }
+
+    public boolean isSquare() {
+        return this.rows == this.cols;
     }
 
 }
