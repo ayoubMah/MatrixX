@@ -78,7 +78,7 @@ public class Example {
 
 - [x] Matrix creation and display
 - [x] Basic arithmetic operations
-- [ ] Transpose, scalar multiplication, equality check
+- [x] Transpose, scalar multiplication, equality check
 - [ ] Determinant and inverse (recursive algorithms)
 - [ ] LU decomposition, Gauss-Jordan, RREF
 - [ ] Special matrix type detection and optimizations
