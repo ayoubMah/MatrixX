@@ -14,36 +14,59 @@ public class Main {
 //        matrixUtils2.desplyMatrix(randomeMatrix2);
 //
 //        System.out.println(randomeMatrix1.length);
-//        Matrix matrix = new Matrix(3,3);
-//        matrix.createMatrixFromUserInput();
-//        System.out.println("first matrix is: ");
-//        matrix.displayMatrix();
-//
-//        Matrix matrix1 = new Matrix(3,3);
-//        matrix1.createMatrixFromUserInput();
-//        System.out.println("second matrix is: ");
-//        matrix1.displayMatrix();
-        Matrix matrix1 = new Matrix(2,2);
-        matrix1.rendomMatrix();
+        Matrix matrix2 = new Matrix(3,3);
+        matrix2.createMatrixFromUserInput();
         System.out.println("first matrix is: ");
-        matrix1.displayMatrix();
-
-        Matrix matrix2 = new Matrix(2,2);
-        matrix2.rendomMatrix();
-        System.out.println("second matrix is: ");
         matrix2.displayMatrix();
 
-        System.out.println("=== adding 2 matrix ===");
-        Matrix adding = matrix1.add(matrix2);
-        adding.displayMatrix();
+        Matrix matrix1 = new Matrix(3,3);
+        matrix1.createMatrixFromUserInput();
+        System.out.println("second matrix is: ");
+        matrix1.displayMatrix();
 
-        System.out.println("=== sub 2 matrix ===");
-        Matrix sub = matrix1.subtract(matrix2);
-        sub.displayMatrix();
+        System.out.println("is matrix1 equal to matrix2:  ? ");
+        System.out.println(matrix1.isEquals(matrix2));
 
-        System.out.println("=== multiplying matrix ===");
-        Matrix multiply = matrix1.multiply(matrix2);
-        multiply.displayMatrix();
+//        Matrix matrix = new Matrix(4,4);
+//        matrix.identity();
+//        matrix.displayMatrix();
+//        System.out.println("---------------");
+//
+//        matrix.scalar(5);
+//        matrix.displayMatrix();
+//
+//        System.out.println("==");
+//
+//        Matrix matrixnull = new Matrix(4,4);
+//        matrixnull.nullMatrix();
+//        matrixnull.displayMatrix();
+//
+//        System.out.println("==");
+
+
+
+        // generated matrix
+//        Matrix matrix1 = new Matrix(2,2);
+//        matrix1.rendomMatrix();
+//        System.out.println("first matrix is: ");
+//        matrix1.displayMatrix();
+//
+//        Matrix matrix2 = new Matrix(2,2);
+//        matrix2.rendomMatrix();
+//        System.out.println("second matrix is: ");
+//        matrix2.displayMatrix();
+
+//        System.out.println("=== adding 2 matrix ===");
+//        Matrix adding = matrix1.add(matrix2);
+//        adding.displayMatrix();
+//
+//        System.out.println("=== sub 2 matrix ===");
+//        Matrix sub = matrix1.subtract(matrix2);
+//        sub.displayMatrix();
+//
+//        System.out.println("=== multiplying matrix ===");
+//        Matrix multiply = matrix1.multiply(matrix2);
+//        multiply.displayMatrix();
 
 
 

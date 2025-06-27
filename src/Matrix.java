@@ -30,8 +30,17 @@ public class Matrix {
     public Matrix createMatrixFromUserInput() {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                System.out.println("Enter the value of [" + (i + 1) + "]"+"["+(j+1)+"] : ");
-                this.data[i][j]= scanner.nextInt();
+                while (true){
+                    System.out.println("Enter the value of [" + (i + 1) + "]"+"["+(j+1)+"] : ");
+                    if (scanner.hasNextInt()){
+                        data[i][j] = scanner.nextInt();
+                        break;
+                    }else {
+                        System.out.println("That's not a valid integer. Try again.");
+                        scanner.next(); // discard invalid input
+                    }
+                }
+
             }
         }
         return this;
@@ -102,6 +111,63 @@ public class Matrix {
             return result;
         }
         throw new Error("You should respect the multiplication condition of 2 matrix");
+    }
+
+    // generate identity matrix
+    public Matrix identity() {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (i == j){
+                    this.data[i][j] = 1;
+                }else  {
+                    this.data[i][j] = 0;
+                }
+
+
+            }
+        }
+        return this;
+    }
+
+    public Matrix nullMatrix() {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.data[i][j] = 0;
+            }
+        }
+        return this;
+    }
+
+    public Matrix scalar(int scalar) {
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.data[i][j] *= scalar;
+            }
+        }
+        return this;
+    }
+
+    public boolean isEquals(Matrix matrix) {
+        if (this.rows != matrix.rows || this.cols != matrix.cols) {
+            return false;
+        }
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                if (this.data[i][j] != matrix.data[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public Matrix transpose() {
+        Matrix result = new Matrix(this.cols, this.rows); // switching numbers of cols and rows
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                this.data[j][i] = this.data[i][j];
+            }
+        }
     }
 
 }
