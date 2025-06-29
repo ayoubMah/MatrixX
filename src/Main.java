@@ -14,16 +14,21 @@ public class Main {
 //        matrixUtils2.desplyMatrix(randomeMatrix2);
 //
 //        System.out.println(randomeMatrix1.length);
-        Matrix matrix2 = new Matrix(2,2);
-        matrix2.createMatrixFromUserInput();
+        Matrix matrix2 = new Matrix(3,3);
+        matrix2.rendomMatrix();
         System.out.println("first matrix is: ");
         matrix2.displayMatrix();
-        Matrix col = matrix2.transpose();
-        System.out.println("transpose of your matrix is: ");
+        Matrix matrix3 = new Matrix(2,2);
+        matrix3.rendomMatrix();
+        System.out.println("second matrix is: ");
+        matrix3.displayMatrix();
+//        System.out.println("the mult of the first and the second matrix is");
+//        (matrix2.multiply(matrix3)).displayMatrix();
+
+        Matrix col = matrix2.power(2);
+        System.out.println("power of your matrix is: ");
         col.displayMatrix();
 
-        System.out.println("is it a square matrix : ");
-        System.out.println(matrix2.isSquare());;
 
 //        Matrix matrix1 = new Matrix(3,3);
 //        matrix1.createMatrixFromUserInput();

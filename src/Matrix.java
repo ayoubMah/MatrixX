@@ -59,6 +59,9 @@ public class Matrix {
 
 
     public void displayMatrix() {
+//        if(this == null){
+//            System.out.println("can not display a null matrix");
+//        }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 System.out.print(this.data[i][j] + "   ");
@@ -174,6 +177,20 @@ public class Matrix {
 
     public boolean isSquare() {
         return this.rows == this.cols;
+    }
+
+    public Matrix power(int n){
+        //Matrix result = new Matrix(rows , cols);
+        if (this.isSquare()){
+            if (n > 0){ //3
+                return (this.multiply(this.power(n-1)));
+            }else {
+                return this.identity();
+            }
+
+        }else {
+            throw new Error("the matrix should be square if you want the power of it");
+        }
     }
 
 }
