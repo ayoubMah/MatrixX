@@ -22,10 +22,15 @@ public class Main {
         matrix3.rendomMatrix();
         System.out.println("second matrix is: ");
         matrix3.displayMatrix();
+
+        Matrix matrix4 = new Matrix(3,3);
+        var cao = matrix4.identity();
+        System.out.println("the multiplication of randome matrox and identity is");
+        matrix2.multiply(cao).displayMatrix();
 //        System.out.println("the mult of the first and the second matrix is");
 //        (matrix2.multiply(matrix3)).displayMatrix();
 
-        Matrix col = matrix2.power(2);
+        Matrix col = matrix2.power(1);
         System.out.println("power of your matrix is: ");
         col.displayMatrix();
 

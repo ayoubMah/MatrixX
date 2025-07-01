@@ -125,8 +125,6 @@ public class Matrix {
                 }else  {
                     this.data[i][j] = 0;
                 }
-
-
             }
         }
         return this;
@@ -180,17 +178,14 @@ public class Matrix {
     }
 
     public Matrix power(int n){
-        //Matrix result = new Matrix(rows , cols);
-        if (this.isSquare()){
-            if (n > 0){ //3
-                return (this.multiply(this.power(n-1)));
-            }else {
-                return this.identity();
-            }
-
-        }else {
-            throw new Error("the matrix should be square if you want the power of it");
+        if (n == 0){
+            return this.identity();
         }
+        if (n == 1){
+            return this;
+        }
+        System.out.println("ok");
+        return this.multiply(this.power(n-1));
     }
 
 }
