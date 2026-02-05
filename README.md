@@ -1,25 +1,25 @@
 # MatrixX
 
-MatrixX is a Java library designed to provide a robust and intuitive API for matrix manipulation and algebra. Whether you are working on scientific computing, engineering, data analysis, or algorithm development, MatrixX delivers high-performance matrix operations and algebraic tools out of the box.
+MatrixX is a Java library designed to provide a robust and intuitive API for matrix manipulation and algebra.
 
 ---
 
 ## Features
 
-### 🟦 Matrix Creation
+###  Matrix Creation
 - **Identity Matrix**: Generate identity matrices of any size.
 - **Zero Matrix**: Create zero matrices.
 - **From Array**: Instantiate matrices directly from 2D arrays.
 
-### 🖨️ Print / Display
+###  Print / Display
 - Easily print matrices in a readable format.
 
-### ➕ Matrix Operations
+###  Matrix Operations
 - **Addition**: Element-wise matrix addition.
 - **Subtraction**: Element-wise matrix subtraction.
 - **Multiplication**: Standard matrix multiplication.
 
-### 🔹 Utility Operations
+###  Utility Operations
 - **Transpose**: Get the transpose of a matrix.
 - **Scalar Multiplication**: Multiply a matrix by a scalar.
 - **Equality Check**: Compare matrices for equality.
@@ -27,13 +27,13 @@ MatrixX is a Java library designed to provide a robust and intuitive API for mat
 - **Determinant**: Compute determinants (supports 2x2, 3x3, and recursive for larger matrices).
 - **Inverse**: Calculate the inverse of a matrix (if it exists).
 
-### 🔸 Algebraic Tools
+###  Algebraic Tools
 - **LU Decomposition**: Decompose a matrix into lower and upper triangular matrices.
 - **Gauss-Jordan Elimination**: Perform row reduction for solving systems or finding inverses.
 - **Rank of Matrix**: Compute the rank.
 - **Reduced Row Echelon Form (RREF)**: Reduce matrices to their canonical form.
 
-### 🔹 Special Matrix Types Support
+###  Special Matrix Types Support
 - **Diagonal Matrices**
 - **Symmetric Matrices**
 - **Identity Matrices**
@@ -87,8 +87,7 @@ public class Example {
 
 ## Contributing
 
-Pull requests, feature requests, and bug reports are welcome!  
-Please open an issue to discuss your ideas or questions.
+PRs, feature requests, and bug reports are welcome :)
 
 ---
 
