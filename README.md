@@ -43,11 +43,22 @@ MatrixX is a Java library designed to provide a robust and intuitive API for mat
 
 ## Installation
 
-Add `MatrixX` to your Java project (Maven/Gradle setup coming soon).  
-For now, clone the repository and include the source files in your project:
+Add `MatrixX` to your Java project via Maven:
+
+```xml
+<dependency>
+    <groupId>com.github.ayoubmah</groupId>
+    <artifactId>matrixx</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+```
+
+For now, clone the repository and build it locally using Maven:
 
 ```shell
 git clone https://github.com/ayoubMah/MatrixX.git
+cd MatrixX
+mvn clean install
 ```
 
 ---
