@@ -1,5 +1,7 @@
 # MatrixX
 
+[![](https://jitpack.io/v/ayoubMah/MatrixX.svg)](https://jitpack.io/#ayoubMah/MatrixX)
+
 MatrixX is a Java library designed to provide a robust and intuitive API for matrix manipulation and algebra.
 
 ---
@@ -43,17 +45,30 @@ MatrixX is a Java library designed to provide a robust and intuitive API for mat
 
 ## Installation
 
-Add `MatrixX` to your Java project via Maven:
+### Step 1. Add the JitPack repository
+Add the JitPack repository to your `pom.xml` file:
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+```
+
+### Step 2. Add the dependency
+Add `MatrixX` to your project dependencies:
 
 ```xml
 <dependency>
-    <groupId>com.github.ayoubmah</groupId>
-    <artifactId>matrixx</artifactId>
-    <version>0.2</version>
+    <groupId>com.github.ayoubMah</groupId>
+    <artifactId>MatrixX</artifactId>
+    <version>v0.2</version>
 </dependency>
 ```
 
-For now, clone the repository and build it locally using Maven:
+Alternatively, you can clone the repository and build it locally using Maven:
 
 ```shell
 git clone https://github.com/ayoubMah/MatrixX.git
