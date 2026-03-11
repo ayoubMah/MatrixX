@@ -150,6 +150,78 @@ public class Matrix {
         return new Matrix(rows, cols);
     }
 
+    /**
+     * Creates a matrix of the specified size, filled with the given constant value.
+     */
+    public static Matrix constant(int rows, int cols, double value) {
+        Matrix m = new Matrix(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                m.data[i][j] = value;
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Creates a matrix of the specified size, filled with ones.
+     */
+    public static Matrix ones(int rows, int cols) {
+        return constant(rows, cols, 1.0);
+    }
+
+    /**
+     * Creates a matrix of the specified size, filled with random values between 0.0 and 1.0.
+     */
+    public static Matrix random(int rows, int cols) {
+        Matrix m = new Matrix(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                m.data[i][j] = Math.random();
+            }
+        }
+        return m;
+    }
+
+    /**
+     * Parses a MATLAB-style matrix string, e.g., "[1 2.5; 3 4]".
+     * Rows are separated by ';' and elements are separated by spaces or commas.
+     *
+     * @param matlabStr the string representing the matrix
+     * @return a new Matrix object corresponding to the string
+     * @throws IllegalArgumentException if the format is invalid or rows are of uneven lengths
+     */
+    public static Matrix fromMatlab(String matlabStr) {
+        if (matlabStr == null || matlabStr.trim().isEmpty()) {
+            throw new IllegalArgumentException("Input string cannot be empty.");
+        }
+        
+        String cleanStr = matlabStr.trim();
+        if (cleanStr.startsWith("[")) cleanStr = cleanStr.substring(1);
+        if (cleanStr.endsWith("]")) cleanStr = cleanStr.substring(0, cleanStr.length() - 1);
+        
+        String[] rowStrs = cleanStr.split(";");
+        if (rowStrs.length == 0) {
+            throw new IllegalArgumentException("No rows found in matrix string.");
+        }
+
+        double[][] parsedData = new double[rowStrs.length][];
+        
+        for (int i = 0; i < rowStrs.length; i++) {
+            String[] elements = rowStrs[i].trim().split("[,\\s]+");
+            parsedData[i] = new double[elements.length];
+            for (int j = 0; j < elements.length; j++) {
+                try {
+                    parsedData[i][j] = Double.parseDouble(elements[j]);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid number format at row " + i + ": " + elements[j], e);
+                }
+            }
+        }
+        
+        return new Matrix(parsedData); // Re-uses constructor validation for rectangularity
+    }
+
     public boolean isSquare() {
         return this.rows == this.cols;
     }
@@ -459,6 +531,25 @@ public class Matrix {
         Matrix transposed = this.transpose();
         Matrix multiplied = this.multiply(transposed);
         return multiplied.isIdentity();
+    }
+
+    /**
+     * Solves the linear system A * X = B.
+     * This relies upon finding the inverse of A.
+     *
+     * @param B the matrix or vector on the right-hand side
+     * @return the solution matrix/vector X
+     * @throws IllegalArgumentException if the dimensions of A and B do not align
+     * @throws IllegalStateException if A is not square or is singular
+     */
+    public Matrix solve(Matrix B) {
+        Objects.requireNonNull(B, "Right-hand side matrix (B) cannot be null.");
+        if (this.rows != B.rows) {
+            throw new IllegalArgumentException("Matrix dimensions do not agree for solving (A.rows must match B.rows).");
+        }
+        
+        Matrix inverseA = this.inverse(); // Validates square matrix & singular nature intrinsically
+        return inverseA.multiply(B);
     }
 
     public boolean isEquals(Matrix matrix) {

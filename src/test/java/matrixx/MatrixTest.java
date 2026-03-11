@@ -233,4 +233,65 @@ public class MatrixTest {
         Matrix m3 = new Matrix(new double[][]{ {1, 2}, {3, 4} });
         assertFalse(m3.isOrthogonal());
     }
+
+    @Test
+    public void testSolve() {
+        Matrix A = new Matrix(new double[][]{
+            {1, 2},
+            {3, 4}
+        });
+        Matrix B = new Matrix(new double[][]{
+            {5},
+            {11}
+        });
+        
+        // solve A * X = B
+        Matrix X = A.solve(B);
+        
+        Matrix expectedX = new Matrix(new double[][]{
+            {1},
+            {2}
+        });
+        assertEquals(expectedX, X);
+        
+        // Verify A * X = B
+        assertEquals(B, A.multiply(X));
+    }
+
+    @Test
+    public void testSolveExceptions() {
+        Matrix A = new Matrix(new double[][]{ {1, 2, 3}, {4, 5, 6} }); // not square
+        Matrix B = Matrix.identity(2);
+        assertThrows(IllegalStateException.class, () -> A.solve(B));
+
+        Matrix C = Matrix.identity(3);
+        assertThrows(IllegalArgumentException.class, () -> C.solve(B)); // B rows (2) != C rows (3)
+    }
+
+    @Test
+    public void testStaticBuilders() {
+        Matrix ones = Matrix.ones(2, 3);
+        assertEquals(new Matrix(new double[][]{{1, 1, 1}, {1, 1, 1}}), ones);
+        
+        Matrix constant = Matrix.constant(2, 2, 5.5);
+        assertEquals(new Matrix(new double[][]{{5.5, 5.5}, {5.5, 5.5}}), constant);
+        
+        Matrix rand = Matrix.random(4, 4);
+        assertEquals(4, rand.getRows());
+        assertEquals(4, rand.getCols());
+        assertTrue(rand.get(0, 0) >= 0.0 && rand.get(0, 0) <= 1.0);
+    }
+
+    @Test
+    public void testFromMatlab() {
+        Matrix m1 = Matrix.fromMatlab("[1 2 3; 4 5 6]");
+        assertEquals(new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}}), m1);
+
+        Matrix m2 = Matrix.fromMatlab("1.5, 2.5; 3.5, 4.5");
+        assertEquals(new Matrix(new double[][]{{1.5, 2.5}, {3.5, 4.5}}), m2);
+        
+        assertThrows(IllegalArgumentException.class, () -> Matrix.fromMatlab(""));
+        assertThrows(IllegalArgumentException.class, () -> Matrix.fromMatlab("[1 2; 3 4 5]")); // Unbalanced
+        assertThrows(IllegalArgumentException.class, () -> Matrix.fromMatlab("[1 x; 3 4]")); // Bad parsing
+    }
 }
