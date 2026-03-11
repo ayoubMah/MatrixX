@@ -91,8 +91,8 @@ public class Example {
 - [x] Basic arithmetic operations
 - [x] Transpose, scalar multiplication, equality check
 - [x] Determinant and inverse (recursive algorithms)
-- [ ] LU decomposition, Gauss-Jordan, RREF
-- [ ] Special matrix type detection and optimizations
+- [x] LU decomposition, Gauss-Jordan, RREF
+- [x] Special matrix type detection and optimizations
 
 ---
 

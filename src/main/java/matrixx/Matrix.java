@@ -245,6 +245,106 @@ public class Matrix {
     }
 
     /**
+     * Computes the LU decomposition of this matrix.
+     * The matrix must be square. This uses Doolittle's algorithm (L has 1s on the diagonal).
+     * Note: This does not implement partial pivoting, so it may fail with ArithmeticException if a zero pivot is encountered.
+     *
+     * @return an LUPair containing the Lower (L) and Upper (U) matrices
+     */
+    public LUPair lu() {
+        if (!isSquare()) {
+            throw new IllegalStateException("LU decomposition requires a square matrix.");
+        }
+        int n = rows;
+        Matrix L = Matrix.identity(n);
+        Matrix U = Matrix.zero(n, n);
+        
+        for (int i = 0; i < n; i++) {
+            // Upper Triangular
+            for (int k = i; k < n; k++) {
+                double sum = 0;
+                for (int j = 0; j < i; j++) {
+                    sum += L.get(i, j) * U.get(j, k);
+                }
+                U.set(i, k, this.data[i][k] - sum);
+            }
+            // Lower Triangular
+            for (int k = i + 1; k < n; k++) {
+                double sum = 0;
+                for (int j = 0; j < i; j++) {
+                    sum += L.get(k, j) * U.get(j, i);
+                }
+                if (Math.abs(U.get(i, i)) < 1e-9) {
+                    throw new ArithmeticException("LU Decomposition failed: Zero pivot encountered.");
+                }
+                L.set(k, i, (this.data[k][i] - sum) / U.get(i, i));
+            }
+        }
+        return new LUPair(L, U);
+    }
+
+    /**
+     * Computes the Reduced Row Echelon Form (RREF) using Gauss-Jordan elimination.
+     *
+     * @return a new Matrix representing the RREF of this matrix
+     */
+    public Matrix rref() {
+        Matrix result = new Matrix(this.data); // Copy to mutate
+        int lead = 0;
+        int rowCount = result.rows;
+        int colCount = result.cols;
+        
+        for (int r = 0; r < rowCount; r++) {
+            if (colCount <= lead) {
+                return result;
+            }
+            int i = r;
+            while (Math.abs(result.data[i][lead]) < 1e-9) {
+                i++;
+                if (rowCount == i) {
+                    i = r;
+                    lead++;
+                    if (colCount == lead) {
+                        return result;
+                    }
+                }
+            }
+            
+            // Swap rows i and r
+            double[] temp = result.data[i];
+            result.data[i] = result.data[r];
+            result.data[r] = temp;
+            
+            // Divide row r by matrix[r][lead]
+            double lv = result.data[r][lead];
+            for (int j = 0; j < colCount; j++) {
+                result.data[r][j] /= lv;
+            }
+            
+            // Subtract row r from all other rows
+            for (int j = 0; j < rowCount; j++) {
+                if (j != r) {
+                    double lv2 = result.data[j][lead];
+                    for (int k = 0; k < colCount; k++) {
+                        result.data[j][k] -= lv2 * result.data[r][k];
+                    }
+                }
+            }
+            lead++;
+        }
+        
+        // Clean up -0.0
+        for (int i = 0; i < rowCount; i++) {
+            for (int j = 0; j < colCount; j++) {
+                if (Math.abs(result.data[i][j]) < 1e-9) {
+                    result.data[i][j] = 0.0;
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
      * Calculates the Cofactor Matrix.
      */
     public Matrix getCofactorMatrix() {
@@ -303,6 +403,64 @@ public class Matrix {
         return adj.multiply(1.0 / det);
     }
 
+    /**
+     * Checks if the matrix is a Diagonal Matrix
+     * (all elements outside the main diagonal are zero).
+     */
+    public boolean isDiagonal() {
+        if (!isSquare()) return false;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (i != j && Math.abs(data[i][j]) > 1e-9) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the matrix is symmetric (A = A^T).
+     */
+    public boolean isSymmetric() {
+        if (!isSquare()) return false;
+        for (int i = 0; i < rows; i++) {
+            for (int j = i + 1; j < cols; j++) {
+                if (Math.abs(data[i][j] - data[j][i]) > 1e-9) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the matrix is exactly the Identity Matrix.
+     */
+    public boolean isIdentity() {
+        if (!isSquare()) return false;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (i == j) {
+                    if (Math.abs(data[i][j] - 1.0) > 1e-9) return false;
+                } else {
+                    if (Math.abs(data[i][j]) > 1e-9) return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the matrix is Orthogonal (A * A^T = I).
+     */
+    public boolean isOrthogonal() {
+        if (!isSquare()) return false;
+        Matrix transposed = this.transpose();
+        Matrix multiplied = this.multiply(transposed);
+        return multiplied.isIdentity();
+    }
+
     public boolean isEquals(Matrix matrix) {
         if (matrix == null) return false;
         return this.equals(matrix);
@@ -354,4 +512,9 @@ public class Matrix {
     public void print() {
         System.out.println(this.toString());
     }
+
+    /**
+     * A container for the LU Decomposition results.
+     */
+    public record LUPair(Matrix L, Matrix U) {}
 }

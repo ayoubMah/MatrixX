@@ -130,4 +130,107 @@ public class MatrixTest {
         Matrix m = new Matrix(2, 3);
         assertThrows(IllegalStateException.class, () -> m.determinant());
     }
+
+    @Test
+    public void testLUDecomposition() {
+        Matrix m = new Matrix(new double[][]{
+            {2, -1, -2},
+            {-4, 6, 3},
+            {-4, -2, 8}
+        });
+        Matrix.LUPair lu = m.lu();
+        
+        Matrix expectedL = new Matrix(new double[][]{
+            {1, 0, 0},
+            {-2, 1, 0},
+            {-2, -1, 1}
+        });
+        Matrix expectedU = new Matrix(new double[][]{
+            {2, -1, -2},
+            {0, 4, -1},
+            {0, 0, 3}
+        });
+        
+        assertEquals(expectedL, lu.L(), "L matrix is incorrect");
+        assertEquals(expectedU, lu.U(), "U matrix is incorrect");
+        
+        // Final sanity check: L * U = A
+        assertEquals(m, lu.L().multiply(lu.U()), "L * U does not equal A");
+    }
+
+    @Test
+    public void testLUDecompositionZeroPivot() {
+        Matrix m = new Matrix(new double[][]{
+            {0, 1},
+            {1, 0}
+        });
+        assertThrows(ArithmeticException.class, () -> m.lu());
+    }
+
+    @Test
+    public void testRREF() {
+        Matrix m = new Matrix(new double[][]{
+            {1, 2, -1, -4},
+            {2, 3, -1, -11},
+            {-2, 0, -3, 22}
+        });
+        Matrix rref = m.rref();
+        
+        Matrix expected = new Matrix(new double[][]{
+            {1, 0, 0, -8},
+            {0, 1, 0, 1},
+            {0, 0, 1, -2}
+        });
+        
+        assertEquals(expected, rref);
+    }
+
+    @Test
+    public void testIsDiagonal() {
+        Matrix m = new Matrix(new double[][]{ {2, 0}, {0, 3} });
+        assertTrue(m.isDiagonal());
+        
+        Matrix m2 = new Matrix(new double[][]{ {2, 1}, {0, 3} });
+        assertFalse(m2.isDiagonal());
+    }
+
+    @Test
+    public void testIsSymmetric() {
+        Matrix m = new Matrix(new double[][]{
+            {1, 7, 3},
+            {7, 4, -5},
+            {3, -5, 6}
+        });
+        assertTrue(m.isSymmetric());
+        
+        Matrix m2 = new Matrix(new double[][]{ {1, 2}, {3, 4} });
+        assertFalse(m2.isSymmetric());
+    }
+
+    @Test
+    public void testIsIdentity() {
+        Matrix m = Matrix.identity(3);
+        assertTrue(m.isIdentity());
+        
+        Matrix m2 = new Matrix(new double[][]{ {1, 0}, {0, 2} });
+        assertFalse(m2.isIdentity());
+    }
+
+    @Test
+    public void testIsOrthogonal() {
+        // A simple Orthogonal Matrix (rotation by 90 degrees)
+        Matrix m = new Matrix(new double[][]{ {0, -1}, {1, 0} });
+        assertTrue(m.isOrthogonal());
+        
+        // A 3x3 Permutation Matrix is Orthogonal
+        Matrix m2 = new Matrix(new double[][]{
+            {0, 1, 0},
+            {0, 0, 1},
+            {1, 0, 0}
+        });
+        assertTrue(m2.isOrthogonal());
+        
+        Matrix m3 = new Matrix(new double[][]{ {1, 2}, {3, 4} });
+        assertFalse(m3.isOrthogonal());
+    }
 }
