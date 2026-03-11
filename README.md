@@ -49,7 +49,7 @@ Add `MatrixX` to your Java project via Maven:
 <dependency>
     <groupId>com.github.ayoubmah</groupId>
     <artifactId>matrixx</artifactId>
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
