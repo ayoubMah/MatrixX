@@ -85,15 +85,40 @@ import matrixx.Matrix;
 
 public class Example {
     public static void main(String[] args) {
+        // 1. Matrix Creation
         double[][] data = {
-            {1, 2},
-            {3, 4}
+            {1, 2, 3},
+            {4, 5, 6},
+            {7, 8, 9}
         };
         Matrix A = new Matrix(data);
-        Matrix B = Matrix.identity(2);
+        Matrix I = Matrix.identity(3);
 
-        Matrix sum = A.add(B);
-        sum.print(); // Display the resulting matrix
+        // 2. Arithmetic Operations
+        Matrix sum = A.add(I);
+        System.out.println("A + I =");
+        sum.print();
+
+        // 3. Advanced Algebraic Tools
+        Matrix B = new Matrix(new double[][]{
+            {4, 7}, 
+            {2, 6}
+        });
+        
+        System.out.println("Determinant of B: " + B.determinant());
+        
+        System.out.println("Inverse of B:");
+        B.inverse().print();
+        
+        // 4. Matrix Decompositions (LU Factorization)
+        Matrix.LUPair lu = B.lu();
+        System.out.println("L Matrix:");
+        lu.L().print();
+        System.out.println("U Matrix:");
+        lu.U().print();
+        
+        // 5. Matrix Typed Validations
+        System.out.println("Is I a Diagonal Matrix? " + I.isDiagonal());
     }
 }
 ```
