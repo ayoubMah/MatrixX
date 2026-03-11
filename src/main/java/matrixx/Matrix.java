@@ -417,6 +417,210 @@ public class Matrix {
     }
 
     /**
+     * Computes the Cholesky Decomposition of a symmetric, positive-definite matrix.
+     * Returns a lower triangular matrix L such that A = L * L^T.
+     *
+     * @return the lower triangular matrix L
+     * @throws IllegalStateException    if the matrix is not square, not symmetric, or not positive definite
+     */
+    public Matrix cholesky() {
+        if (!isSquare() || !isSymmetric()) {
+            throw new IllegalStateException("Cholesky decomposition requires a square, symmetric matrix.");
+        }
+        int n = this.rows;
+        Matrix L = Matrix.zero(n, n);
+        for (int j = 0; j < n; j++) {
+            double sum = 0;
+            for (int k = 0; k < j; k++) {
+                sum += Math.pow(L.get(j, k), 2);
+            }
+            double diag = this.data[j][j] - sum;
+            if (diag <= 0) {
+                throw new IllegalStateException("Matrix is not positive definite.");
+            }
+            L.set(j, j, Math.sqrt(diag));
+
+            for (int i = j + 1; i < n; i++) {
+                double sum2 = 0;
+                for (int k = 0; k < j; k++) {
+                    sum2 += L.get(i, k) * L.get(j, k);
+                }
+                L.set(i, j, (this.data[i][j] - sum2) / L.get(j, j));
+            }
+        }
+        return L;
+    }
+
+    /**
+     * Computes the QR decomposition of a matrix.
+     * Returns orthogonal matrix Q and upper triangular matrix R such that A = Q * R.
+     * Uses Modified Gram-Schmidt process.
+     *
+     * @return a QRPair containing Q and R matrices
+     */
+    public QRPair qr() {
+        Matrix Q = Matrix.zero(rows, cols);
+        Matrix R = Matrix.zero(cols, cols);
+        Matrix V = new Matrix(this.data);
+        
+        for (int k = 0; k < cols; k++) {
+            double norm = 0;
+            for (int i = 0; i < rows; i++) {
+                norm += Math.pow(V.get(i, k), 2);
+            }
+            norm = Math.sqrt(norm);
+            
+            if (Math.abs(norm) < 1e-9) {
+                throw new ArithmeticException("Zero norm vector encountered in QR decomposition (matrix might be rank-deficient).");
+            }
+            R.set(k, k, norm);
+            
+            for (int i = 0; i < rows; i++) {
+                Q.set(i, k, V.get(i, k) / norm);
+            }
+            
+            for (int j = k + 1; j < cols; j++) {
+                double dot = 0;
+                for (int i = 0; i < rows; i++) {
+                    dot += Q.get(i, k) * V.get(i, j);
+                }
+                R.set(k, j, dot);
+                
+                for (int i = 0; i < rows; i++) {
+                    V.set(i, j, V.get(i, j) - dot * Q.get(i, k));
+                }
+            }
+        }
+        return new QRPair(Q, R);
+    }
+
+    /**
+     * Analytically solves for eigenvalues and eigenvectors.
+     * Only supports 2x2 and 3x3 square matrices.
+     *
+     * @return an EigenResult containing the eigenvalues and corresponding eigenvectors
+     * @throws UnsupportedOperationException if matrix is not 2x2 or 3x3
+     * @throws IllegalStateException if eigenvalues are complex (this basic solver only handles real eigenvalues)
+     */
+    public EigenResult eigen() {
+        if (!isSquare() || (rows != 2 && rows != 3)) {
+            throw new UnsupportedOperationException("Analytical eigen solver only supports 2x2 and 3x3 matrices.");
+        }
+        
+        if (rows == 2) {
+            double a = data[0][0], b = data[0][1];
+            double c = data[1][0], d = data[1][1];
+            double trace = a + d;
+            double det = a * d - b * c;
+            double discriminant = trace * trace - 4 * det;
+            if (discriminant < 0) {
+                throw new IllegalStateException("Matrix has complex eigenvalues.");
+            }
+            
+            double lambda1 = (trace + Math.sqrt(discriminant)) / 2.0;
+            double lambda2 = (trace - Math.sqrt(discriminant)) / 2.0;
+            
+            Matrix vec1 = findEigenvector2x2(lambda1, a, b, c, d);
+            Matrix vec2 = findEigenvector2x2(lambda2, a, b, c, d);
+            
+            return new EigenResult(new double[]{lambda1, lambda2}, new Matrix[]{vec1, vec2});
+        } else {
+            // 3x3 Analytical using characteristic equation: x^3 - c2*x^2 - c1*x - c0 = 0
+            double a11 = data[0][0], a12 = data[0][1], a13 = data[0][2];
+            double a21 = data[1][0], a22 = data[1][1], a23 = data[1][2];
+            double a31 = data[2][0], a32 = data[2][1], a33 = data[2][2];
+            
+            double c2 = a11 + a22 + a33; // Trace
+            double c1 = -((a11*a22 - a12*a21) + (a11*a33 - a13*a31) + (a22*a33 - a23*a32));
+            double c0 = determinant(); // Det
+            
+            // Substitute x = y + c2/3 to get y^3 + p*y + q = 0
+            double p = -c2*c2/3.0 - c1;
+            double q = -2.0*c2*c2*c2/27.0 - c1*c2/3.0 - c0;
+            
+            double delta = (q*q/4.0) + (p*p*p/27.0);
+            if (delta > 0) {
+                 throw new IllegalStateException("Matrix has complex eigenvalues.");
+            }
+            
+            // Trigonometric solution for 3 given real roots
+            double r = Math.sqrt(Math.pow(-p/3.0, 3));
+            double phi = Math.acos(-q / (2.0 * r));
+            
+            double y1 = 2.0 * Math.pow(r, 1.0/3.0) * Math.cos(phi / 3.0);
+            double y2 = 2.0 * Math.pow(r, 1.0/3.0) * Math.cos((phi + 2.0 * Math.PI) / 3.0);
+            double y3 = 2.0 * Math.pow(r, 1.0/3.0) * Math.cos((phi + 4.0 * Math.PI) / 3.0);
+            
+            double lambda1 = y1 + c2/3.0;
+            double lambda2 = y2 + c2/3.0;
+            double lambda3 = y3 + c2/3.0;
+            
+            Matrix vec1 = findEigenvector3x3(lambda1);
+            Matrix vec2 = findEigenvector3x3(lambda2);
+            Matrix vec3 = findEigenvector3x3(lambda3);
+            
+            return new EigenResult(new double[]{lambda1, lambda2, lambda3}, new Matrix[]{vec1, vec2, vec3});
+        }
+    }
+
+    private Matrix findEigenvector2x2(double lambda, double a, double b, double c, double d) {
+        if (Math.abs(b) > 1e-9) return new Matrix(new double[][]{ {lambda - d}, {c} }).normalize();
+        if (Math.abs(c) > 1e-9) return new Matrix(new double[][]{ {b}, {lambda - a} }).normalize();
+        return new Matrix(new double[][]{ {1}, {0} }); // Default fallback for diagonal matrices
+    }
+
+    private Matrix findEigenvector3x3(double lambda) {
+        Matrix M = this.subtract(Matrix.identity(3).multiply(lambda));
+        
+        double[] cross01 = crossProduct(M.data[0], M.data[1]);
+        if (vectorNorm(cross01) > 1e-6) {
+            return new Matrix(new double[][]{{cross01[0]}, {cross01[1]}, {cross01[2]}}).normalize();
+        }
+        
+        double[] cross12 = crossProduct(M.data[1], M.data[2]);
+        if (vectorNorm(cross12) > 1e-6) {
+            return new Matrix(new double[][]{{cross12[0]}, {cross12[1]}, {cross12[2]}}).normalize();
+        }
+        
+        double[] cross02 = crossProduct(M.data[0], M.data[2]);
+        if (vectorNorm(cross02) > 1e-6) {
+            return new Matrix(new double[][]{{cross02[0]}, {cross02[1]}, {cross02[2]}}).normalize();
+        }
+        
+        // Return standard basis if all are 0
+        return new Matrix(new double[][]{{1}, {0}, {0}});
+    }
+
+    private double[] crossProduct(double[] u, double[] v) {
+        return new double[]{
+            u[1]*v[2] - u[2]*v[1],
+            u[2]*v[0] - u[0]*v[2],
+            u[0]*v[1] - u[1]*v[0]
+        };
+    }
+    
+    private double vectorNorm(double[] v) {
+        return Math.sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
+    }
+
+    /**
+     * Normalizes a vector matrix (1xN or Nx1) to unit length.
+     */
+    public Matrix normalize() {
+        if (!isVector()) {
+            throw new IllegalStateException("Only vectors can be normalized.");
+        }
+        double mag = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                mag += data[i][j] * data[i][j];
+            }
+        }
+        if (Math.abs(mag) < 1e-9) return this;
+        return this.multiply(1.0 / Math.sqrt(mag));
+    }
+
+    /**
      * Calculates the Cofactor Matrix.
      */
     public Matrix getCofactorMatrix() {
@@ -552,6 +756,71 @@ public class Matrix {
         return inverseA.multiply(B);
     }
 
+    /**
+     * Applies a functional mapping over every element of the matrix.
+     */
+    public Matrix map(java.util.function.DoubleUnaryOperator function) {
+        Matrix result = new Matrix(this.rows, this.cols);
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                result.data[i][j] = function.applyAsDouble(this.data[i][j]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Computes the Hadamard Product (element-wise multiplication).
+     */
+    public Matrix hadamardMultiply(Matrix matrix) {
+        Objects.requireNonNull(matrix, "Matrix cannot be null.");
+        if (this.rows != matrix.rows || this.cols != matrix.cols) {
+            throw new IllegalArgumentException("Matrices must have the same dimensions for Hadamard product.");
+        }
+        Matrix result = new Matrix(this.rows, this.cols);
+        for (int i = 0; i < this.rows; i++) {
+            for (int j = 0; j < this.cols; j++) {
+                result.data[i][j] = this.data[i][j] * matrix.data[i][j];
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Computes the Dot Product of two vectors.
+     */
+    public double dotProduct(Matrix vector) {
+        Objects.requireNonNull(vector, "Vector cannot be null.");
+        if (!this.isVector() || !vector.isVector()) {
+            throw new IllegalArgumentException("Dot product requires both operands to be vectors (1xN or Nx1).");
+        }
+        if (this.rows * this.cols != vector.rows * vector.cols) {
+            throw new IllegalArgumentException("Vectors must be the same length.");
+        }
+        double product = 0;
+        double[] v1 = this.toFlatArray();
+        double[] v2 = vector.toFlatArray();
+        for (int i = 0; i < v1.length; i++) {
+            product += v1[i] * v2[i];
+        }
+        return product;
+    }
+
+    private boolean isVector() {
+        return this.rows == 1 || this.cols == 1;
+    }
+
+    private double[] toFlatArray() {
+        double[] arr = new double[rows * cols];
+        int k = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                arr[k++] = data[i][j];
+            }
+        }
+        return arr;
+    }
+
     public boolean isEquals(Matrix matrix) {
         if (matrix == null) return false;
         return this.equals(matrix);
@@ -608,4 +877,14 @@ public class Matrix {
      * A container for the LU Decomposition results.
      */
     public record LUPair(Matrix L, Matrix U) {}
+
+    /**
+     * A container for the QR Decomposition results.
+     */
+    public record QRPair(Matrix Q, Matrix R) {}
+
+    /**
+     * A container for analytical Eigen computational results.
+     */
+    public record EigenResult(double[] eigenvalues, Matrix[] eigenvectors) {}
 }

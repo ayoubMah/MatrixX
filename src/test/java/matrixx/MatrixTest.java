@@ -294,4 +294,99 @@ public class MatrixTest {
         assertThrows(IllegalArgumentException.class, () -> Matrix.fromMatlab("[1 2; 3 4 5]")); // Unbalanced
         assertThrows(IllegalArgumentException.class, () -> Matrix.fromMatlab("[1 x; 3 4]")); // Bad parsing
     }
+
+    @Test
+    public void testCholesky() {
+        Matrix m = new Matrix(new double[][]{
+            {4, 12, -16},
+            {12, 37, -43},
+            {-16, -43, 98}
+        });
+        Matrix L = m.cholesky();
+        Matrix expectedL = new Matrix(new double[][]{
+            {2, 0, 0},
+            {6, 1, 0},
+            {-8, 5, 3}
+        });
+        assertEquals(expectedL, L);
+        assertEquals(m, L.multiply(L.transpose()));
+    }
+
+    @Test
+    public void testCholeskyExceptions() {
+        Matrix notSymmetric = new Matrix(new double[][]{{1, 2}, {3, 4}});
+        assertThrows(IllegalStateException.class, () -> notSymmetric.cholesky());
+
+        Matrix notDefinite = new Matrix(new double[][]{{1, 2}, {2, 1}}); // det = 1 - 4 = -3
+        assertThrows(IllegalStateException.class, () -> notDefinite.cholesky());
+    }
+
+    @Test
+    public void testQR() {
+        Matrix A = new Matrix(new double[][]{
+            {12, -51, 4},
+            {6, 167, -68},
+            {-4, 24, -41}
+        });
+        Matrix.QRPair qr = A.qr();
+        assertTrue(qr.Q().isOrthogonal());
+        
+        Matrix QR = qr.Q().multiply(qr.R());
+        for (int i=0; i<A.getRows(); i++) {
+            for (int j=0; j<A.getCols(); j++) {
+                assertEquals(A.get(i, j), QR.get(i, j), 1e-5);
+            }
+        }
+    }
+
+    @Test
+    public void testEigen2x2() {
+        Matrix A = new Matrix(new double[][]{{1, 2}, {2, 1}});
+        Matrix.EigenResult res = A.eigen();
+        assertEquals(3.0, Math.max(res.eigenvalues()[0], res.eigenvalues()[1]), 1e-5);
+        assertEquals(-1.0, Math.min(res.eigenvalues()[0], res.eigenvalues()[1]), 1e-5);
+        
+        Matrix v0 = res.eigenvectors()[0];
+        Matrix lambdaV0 = v0.multiply(res.eigenvalues()[0]);
+        Matrix Av0 = A.multiply(v0);
+        for (int i=0; i<v0.getRows(); i++) assertEquals(lambdaV0.get(i, 0), Av0.get(i, 0), 1e-5);
+    }
+
+    @Test
+    public void testEigen3x3() {
+        Matrix S = new Matrix(new double[][]{
+            {2, -1, 0},
+            {-1, 2, -1},
+            {0, -1, 2}
+        });
+        Matrix.EigenResult res = S.eigen();
+        Matrix v0 = res.eigenvectors()[0];
+        Matrix lambdaV0 = v0.multiply(res.eigenvalues()[0]);
+        Matrix Av0 = S.multiply(v0);
+        for (int i=0; i<v0.getRows(); i++) assertEquals(lambdaV0.get(i, 0), Av0.get(i, 0), 1e-5);
+    }
+
+    @Test
+    public void testMap() {
+        Matrix A = new Matrix(new double[][]{{0, Math.PI / 2}});
+        Matrix B = A.map(Math::sin);
+        assertEquals(new Matrix(new double[][]{{0, 1}}), B);
+    }
+
+    @Test
+    public void testHadamard() {
+        Matrix A = new Matrix(new double[][]{{1, 2}, {3, 4}});
+        Matrix B = new Matrix(new double[][]{{2, 3}, {4, 5}});
+        assertEquals(new Matrix(new double[][]{{2, 6}, {12, 20}}), A.hadamardMultiply(B));
+    }
+
+    @Test
+    public void testDotProduct() {
+        Matrix v1 = new Matrix(new double[][]{{1}, {2}, {3}});
+        Matrix v2 = new Matrix(new double[][]{{4}, {5}, {6}});
+        assertEquals(32.0, v1.dotProduct(v2), 1e-9);
+        
+        Matrix v3 = new Matrix(new double[][]{{1, 2, 3}});
+        assertEquals(32.0, v3.dotProduct(v2), 1e-9);
+    }
 }
