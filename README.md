@@ -143,19 +143,12 @@ public class Example {
 
 ---
 
-## Roadmap
+## Roadmap & Future Development
 
-- [x] Matrix creation and display
-- [x] Basic arithmetic operations
-- [x] Transpose, scalar multiplication, equality check
-- [x] Determinant and inverse (recursive algorithms)
-- [x] LU decomposition, Gauss-Jordan, RREF
-- [x] Special matrix type detection and optimizations
-- [x] Analytical Linear Solvers ($A \cdot X = B$)
-- [x] Advanced Decompositions (Cholesky, QR)
-- [x] Eigenvalue & Eigenvector Analytical Solvers (2x2, 3x3)
-- [x] Functional Map Operations & Vector Dot Products
-- [x] Static Matrix Builders & MATLAB String Parsers
+MatrixX is under active development.
+We are pushing towards **v0.4**, targeting **Float Matrices**, **Vector classes**, and overall syntax polish!
+
+To see what's planned for future releases—including Complex Numbers, Matrix Statistics, Singular Value Decomposition (SVD), and SIMD hardware acceleration—check out our detailed [Development Roadmap](ROADMAP.md).
 
 ---
 
